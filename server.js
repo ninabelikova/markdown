@@ -24,6 +24,17 @@ var options = {
 
 sharejs.server.attach(app, options);
 
+// set up redis server
+var redis_client;
+console.log(process.env.REDISTOGO_URL);
+if (process.env.REDISTOGO_URL) {
+  var rtg = require("url").parse(process.env.REDISTOGO_URL);
+  redis_client = require("redis").createClient(rtg.port, rtg.hostname);
+  redis_client.auth(rtg.auth.split(":")[1]);
+} else {
+  redis_client = require("redis").createClient();
+}
+
 // listen
 
 var port = process.env.PORT || 8000;
