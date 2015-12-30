@@ -16,13 +16,8 @@ app.get('/(:id)', function(req, res) {
 
 // sharejs stuff
 var sharejs = require('share');
-require('redis');
 
-var options = {
-  db: {type: 'redis'},
-};
 
-sharejs.server.attach(app, options);
 
 // set up redis server
 var redis_client;
@@ -34,6 +29,15 @@ if (process.env.REDISTOGO_URL) {
 } else {
   redis_client = require("redis").createClient();
 }
+
+// set up the sharejs
+
+var options = {
+  db: {type: 'redis', client: redis_client},
+};
+
+sharejs.server.attach(app, options);
+
 
 // listen
 
